@@ -1,4 +1,4 @@
-# Projeto Tarefas
+# Projeto Lista de Tarefas
 
 ## Visão Geral
 
