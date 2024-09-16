@@ -1,0 +1,20 @@
+﻿h2 {
+    margin-top: 20px;
+}
+.tituloItem, .descricaoItem {
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.container-adicionar{
+    margin-top: 10%;
+    background-color: snow;
+}
+
+.btn-group{
+    align-items:baseline;
+}
+.form-check {
+    margin-right: 10px;
+}

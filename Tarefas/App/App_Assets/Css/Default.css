@@ -1,0 +1,78 @@
+﻿.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.header-title {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.default-titulo-header{
+    max-width: 30%;
+}
+
+.truncar-titulo {
+    width: 18rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 30px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.titulo-completo {
+    height: auto;
+    white-space: normal;
+    max-width: 18rem;
+    word-wrap: break-word;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.default-descricao-header {
+    width: 52%;
+}
+
+.truncar-descricao {
+    max-width: 34rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 30px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.descricao-completa {
+    height: auto;
+    white-space: normal;
+    max-width: 34rem;
+    word-wrap: break-word;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.feito{
+    text-decoration: line-through;
+}
+
+.default-status-header {
+    width: 5%;
+}
+
+.default-acao-header{
+    width: 13%;
+}
+
+.status-feito, .status-desfeito {
+    text-align: center;
+}
+
+.bg-verde {
+    background-color: #28a745;
+}
