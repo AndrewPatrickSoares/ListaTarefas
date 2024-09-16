@@ -41,6 +41,7 @@
             </div>
                 <asp:Button id="btnSalvar" CssClass="btn btn-primary btn-salvar" Text="Salvar" OnClick="BntSalvar_Click" runat="server" />
                 <asp:HiddenField ID="hfMensagemErro" runat="server" />
+                <asp:HiddenField ID="hfMensagemSucesso" runat="server" />
         </div>
     </div>
 </form>

@@ -1,6 +1,6 @@
-﻿$(document).ready(function () {
-    // Usa a variável JavaScript para obter o ClientID do controle hidden
-    var mensagemErro = $('#' + hfMensagemErroClientID).val();
+﻿function ExibirMensagem() {
+    var mensagemErro = $('#<%= hfMensagemErro.ClientID %>').val();
+    var mensagemSucesso = $('#<%= hfMensagemSucesso.ClientID %>').val();
 
     if (mensagemErro) {
         Swal.fire({
@@ -9,4 +9,4 @@
             icon: "error"
         });
     }
-});
+}

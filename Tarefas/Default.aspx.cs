@@ -56,7 +56,7 @@ namespace Tarefas
              ExibirTarefas();
          }
 
-        protected void btnAdicionar_click(object sender, EventArgs e)
+        protected void BtnAdicionar_click(object sender, EventArgs e)
         {
             Response.Redirect("Adicionar.aspx");
         }

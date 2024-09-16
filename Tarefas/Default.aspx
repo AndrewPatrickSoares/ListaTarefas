@@ -18,7 +18,7 @@
         <div class="container">
             <div class="header-section">
                 <h1 class="header-title">Lista de Tarefas</h1>
-                <asp:Button ID="btnAdicionar" runat="server" Text="Nova Tarefa" OnClick="btnAdicionar_click" CssClass="btn btn-primary" />
+                <asp:Button ID="btnAdicionar" runat="server" Text="Nova Tarefa" OnClick="BtnAdicionar_click" CssClass="btn btn-primary" />
             </div>
 
             <asp:GridView ID="TarefasGrid" runat="server" AutoGenerateColumns="False" OnRowCommand="TarefasGrid_RowCommand" DataKeyNames="Tarefa_id" CssClass="table table-striped table-dark">

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Tarefas.App.App_Models;
 using Tarefas.App.App_Repo;
 
@@ -11,103 +7,146 @@ namespace Tarefas
 {
     public partial class Adicionar : System.Web.UI.Page
     {
-        // TarefaRepo repo = new TarefaRepo();
         private TarefaRepo repo;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["BdListaTarefas"].ConnectionString;
             repo = new TarefaRepo(connectionString);
-            tituloTela.InnerText = "Adicionar Tarefa";
-            if (!IsPostBack && Request.QueryString["id"] != null)
+
+            if (!IsPostBack)
             {
-                tituloTela.InnerText = "Editar Tarefa";
-                int tarefa_id = Convert.ToInt32(Request.QueryString["id"]);
-                Tarefa tarefa = repo.Tarefa_id(tarefa_id);
-                txtTitulo.Text = tarefa.Titulo;
-                txtDescricao.Text = tarefa.Descricao;
-                blnFeito.Checked = tarefa.Feito;
-                blnDesfeito.Checked = tarefa.Desfeito;
+                CarregarTarefaParaEdicao();
             }
 
+            AtualizarMensagemErro();
+        }
+
+        private void CarregarTarefaParaEdicao()
+        {
+            if (Request.QueryString["id"] != null)
+            {
+                tituloTela.InnerText = "Editar Tarefa";
+                int tarefaId = Convert.ToInt32(Request.QueryString["id"]);
+                Tarefa tarefa = repo.Tarefa_id(tarefaId);
+                if (tarefa != null)
+                {
+                    txtTitulo.Text = tarefa.Titulo;
+                    txtDescricao.Text = tarefa.Descricao;
+                    blnFeito.Checked = tarefa.Feito;
+                    blnDesfeito.Checked = tarefa.Desfeito;
+                }
+            }
+            else
+            {
+                tituloTela.InnerText = "Adicionar Tarefa";
+            }
+        }
+
+        private void AtualizarMensagemErro()
+        {
             if (ViewState["msgErro"] != null)
             {
                 hfMensagemErro.Value = ViewState["msgErro"].ToString();
             }
 
             string script = $"var hfMensagemErroClientID = '{hfMensagemErro.ClientID}';";
-            ClientScript.RegisterStartupScript(this.GetType(), "hfMensagemErroClientIDScript", script, true);
+            ClientScript.RegisterStartupScript(GetType(), "hfMensagemErroClientIDScript", script, true);
         }
 
         protected void BntSalvar_Click(object sender, EventArgs e)
         {
             string titulo = txtTitulo.Text.Trim();
-            string msgErro = "";
-            int tarefa_id = 0;
+            string descricao = txtDescricao.Text.Trim();
+            string msgErro = ValidarDados(titulo, descricao);
 
-            if (!string.IsNullOrEmpty(titulo))
+            if (string.IsNullOrEmpty(msgErro))
             {
-                if (Request.QueryString["id"] != null)
+                SalvarTarefa(titulo);
+            }
+            else
+            {
+                MostrarMensagemErro(msgErro);
+            }
+        }
+
+        private string ValidarDados(string titulo, string descricao)
+        {
+            if (string.IsNullOrEmpty(titulo))
+            {
+                return "O título não pode estar vazio.";
+            }
+
+            if (string.IsNullOrEmpty(descricao))
+            {
+                return "A descrição não pode estar vazia.";
+            }
+
+            // Se estamos editando uma tarefa, não precisamos verificar o título da tarefa atual
+            if (Request.QueryString["id"] != null)
+            {
+                int tarefaId = Convert.ToInt32(Request.QueryString["id"]);
+                Tarefa tarefaAtual = repo.Tarefa_id(tarefaId);
+                if (tarefaAtual != null && !tarefaAtual.Titulo.Equals(titulo, StringComparison.OrdinalIgnoreCase) && repo.TarefaExiste(titulo))
                 {
-
-                    tarefa_id = Convert.ToInt32(Request.QueryString["id"]);
-
-                    Tarefa tarefaAtual = repo.Tarefa_id(tarefa_id);
-
-
-                    if (!tarefaAtual.Titulo.Equals(titulo, StringComparison.OrdinalIgnoreCase))
-                    {
-
-                        bool tituloJaExiste = repo.TarefaExiste(titulo);
-                        if (tituloJaExiste)
-                        {
-                            msgErro = "Outra tarefa já possui este título.";
-                        }
-                    }
-                }
-                else
-                {
-                    bool tarefaExiste = repo.TarefaExiste(titulo);
-                    if (tarefaExiste)
-                    {
-                        msgErro = "A tarefa já existe.";
-                    }
-                }
-
-                if (string.IsNullOrEmpty(msgErro))
-                {
-                    Tarefa tarefa = new Tarefa
-                    {
-                        Titulo = txtTitulo.Text,
-                        Descricao = txtDescricao.Text,
-                        Feito = blnFeito.Checked,
-                        Desfeito = blnDesfeito.Checked
-                    };
-
-                    if (Request.QueryString["id"] != null) 
-                    {
-                        tarefa.Tarefa_id = tarefa_id;
-                        repo.AtualizarTarefa(tarefa);
-                    }
-                    else // Adicionando uma nova tarefa
-                    {
-                        repo.AdicionarTarefa(tarefa);
-                    }
+                    return "Outra tarefa já possui este título.";
                 }
             }
             else
             {
-                msgErro = "O título não pode estrar vazio.";
+                // Verificação para novo título
+                if (repo.TarefaExiste(titulo))
+                {
+                    return "A tarefa já existe.";
+                }
             }
 
-            // Exibir mensagem de erro, se houver
-            if (!string.IsNullOrEmpty(msgErro))
+            return string.Empty;
+        }
+
+
+        private void SalvarTarefa(string titulo)
+        {
+            Tarefa tarefa = new Tarefa
             {
-                string script = $"Swal.fire({{title: 'Erro', text: '{msgErro}', icon: 'error'}});";
-                ScriptManager.RegisterStartupScript(this, GetType(), "Erro", script, true);
-                return;
-            }
+                Titulo = titulo,
+                Descricao = txtDescricao.Text,
+                Feito = blnFeito.Checked,
+                Desfeito = blnDesfeito.Checked
+            };
 
-            Response.Redirect("Default.aspx");
+            if (Request.QueryString["id"] != null)
+            {
+                tarefa.Tarefa_id = Convert.ToInt32(Request.QueryString["id"]);
+                repo.AtualizarTarefa(tarefa);
+                MostrarMensagemSucesso("Tarefa atualizada com sucesso!");
+            }
+            else
+            {
+                repo.AdicionarTarefa(tarefa);
+                MostrarMensagemSucesso("Tarefa adicionada com sucesso!");
+            }
+        }
+
+        private void MostrarMensagemSucesso(string mensagem)
+        {
+            string script = $@"
+                Swal.fire({{
+                    title: 'Sucesso',
+                    text: '{mensagem}',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }}).then(function() {{
+                    window.location.href = 'Default.aspx';
+                }});";
+            ScriptManager.RegisterStartupScript(this, GetType(), "Sucesso", script, true);
+        }
+
+        private void MostrarMensagemErro(string mensagem)
+        {
+            string script = $"Swal.fire({{title: 'Erro', text: '{mensagem}', icon: 'error'}});";
+            ScriptManager.RegisterStartupScript(this, GetType(), "Erro", script, true);
         }
     }
 }

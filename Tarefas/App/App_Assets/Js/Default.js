@@ -27,7 +27,7 @@
             if (result.isConfirmed) {
                 Swal.fire({
                 title: "Excluido",
-                text: "Tarefaexcluida com sucesso.",
+                text: "Tarefa excluida com sucesso.",
                 icon: "success",
                 });
             setTimeout(function () {
