@@ -17,6 +17,8 @@ A pasta `App` contém a lógica principal do projeto, dividida em subpastas para
     - **`Css`**
         - `Default.css`: Define estilos para a página principal (`Default.aspx`). Inclui regras para cabeçalhos, truncamento de texto, e status visual das tarefas.
         - `Adicionar.css`: Contém estilos específicos para a página de adicionar/editar tarefas (`Adicionar.aspx`), como estilos para títulos e descrições.
+    - **`Img`**
+        - `Task.jpeg`: Imagem utilizada no backgroud para as páginas.
     - **`Js`**
         - `Default.js`: Scripts para a página principal (`Default.aspx`). Inclui manipulação de eventos para expandir/retrair títulos e descrições truncados e para a exclusão de tarefas com a biblioteca SweetAlert.
         - `Adicionar.js`: Scripts para a página de adicionar/editar tarefas (`Adicionar.aspx`). Utiliza SweetAlert para exibir mensagens de erro em caso de falhas de validação ao adicionar ou editar tarefas.
